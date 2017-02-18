@@ -1,0 +1,28 @@
+{
+    "name": "buildok/base-app",
+    "type": "package",
+    "homepage": "https://github.com/buildok/base-app",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "buildok",
+            "email": "buildok01@gmail.com",
+            "homepage": "https://github.com/buildok",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "buildok/helpers":"dev-master",
+        "buildok/validator":"dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "buildok\\base\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "buildok\\base\\test\\": "tests"
+        }
+    }
+}
