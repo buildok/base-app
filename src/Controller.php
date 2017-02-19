@@ -1,7 +1,7 @@
 <?php
 namespace buildok\base;
 
-use buildok\base\exceptions\BaseHttpException;
+use buildok\base\exceptions\HttpException;
 use buildok\helpers\ArrayWrapper;
 
 /**
@@ -12,7 +12,7 @@ class Controller
     /**
      * Supported request methods
      */
-    const METHODS = ['GET', 'POST'];
+    const METHOD = ['GET', 'POST'];
 
     /**
      * Supported content type
@@ -30,12 +30,25 @@ class Controller
      */
     public function __construct()
     {
-        if (!in_array($_SERVER['REQUEST_METHOD'], self::METHODS)) {
-            throw new BaseHttpException('Unsupported request method:' . $income['method'], 400);
+        $this->fetchRequestData();
+
+
+    }
+
+    /**
+     * Fetch request data
+     *
+     * @throws HttpException
+     */
+    private function fetchRequestData()
+    {
+        if (!in_array($_SERVER['REQUEST_METHOD'], self::METHOD)) {
+            throw new HttpException('Unsupported request method:' . $income['method'], 400);
         }
 
         $income['headers'] = $this->getRequestHeaders();
         $income['method'] = $_SERVER['REQUEST_METHOD'];
+        $income['ip'] = $_SERVER['REMOTE_ADDR'];
         if (!empty($_GET)) {
             $income['get'] = $_GET;
         }
@@ -46,7 +59,7 @@ class Controller
                 $body = json_decode(file_get_contents('php://input'));
 
                 if (is_null($body)) {
-                    throw new BaseHttpException('Bad content format', 400);
+                    throw new HttpException('Bad content format', 400);
                 }
 
                 $income['body'] = $body;
@@ -55,8 +68,9 @@ class Controller
 
         $this->request = new ArrayWrapper($income);
 
-        $this->request->headers['isAjax'] = array_key_exists('X-Requested-With', $this->request->headers)
+        $this->request->isAjax = array_key_exists('X-Requested-With', $this->request->headers)
             && (strcasecmp($this->request->headers['X-Requested-With'], 'XmlHttpRequest') == 0);
+
     }
 
     /**

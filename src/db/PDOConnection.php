@@ -1,8 +1,7 @@
 <?php
 namespace buildok\base\db;
 
-use buildok\base\Config;
-use buildok\base\exceptions\BaseAppException;
+use buildok\base\exceptions\AppException;
 
 /**
  *
@@ -31,10 +30,10 @@ class PDOConnection
      * Get object of this class
      * @return DataProvider
      */
-    public static function getInstance()
+    public static function getInstance($dsn, $user, $password = '')
     {
         if (is_null(self::$_instance)) {
-            self::$_instance = new self();
+            self::$_instance = new self($dsn, $user, $password);
         }
 
         return self::$_instance;
@@ -51,7 +50,7 @@ class PDOConnection
             $this->stmt = $this->dbConnection->prepare($sql);
         } catch (\PDOException $e) {
 
-            throw new BaseAppException($e->getMessage(), $e->getCode());
+            throw new AppException($e->getMessage(), $e->getCode());
         }
 
         return $this;
@@ -65,14 +64,14 @@ class PDOConnection
     public function exec($params = [])
     {
         if (!$this->stmt) {
-            throw new BaseAppException('SQL query is not prepared', 'DB');
+            throw new AppException('SQL query is not prepared', 'DB');
         }
 
         try {
             $this->stmt->execute($params);
         } catch (\PDOException $e) {
 
-            throw new BaseAppException($e->getMessage(), $e->getCode());
+            throw new AppException($e->getMessage(), $e->getCode());
         }
 
         return $this;
@@ -86,7 +85,7 @@ class PDOConnection
     public function one($style = \PDO::FETCH_ASSOC)
     {
         if (!$this->stmt) {
-            throw new BaseAppException('SQL query is not prepared', 'DB');
+            throw new AppException('SQL query is not prepared', 'DB');
         }
 
         try {
@@ -94,7 +93,7 @@ class PDOConnection
             $this->stmt->closeCursor();
         } catch (\PDOException $e) {
 
-            throw new BaseAppException($e->getMessage(), $e->getCode());
+            throw new AppException($e->getMessage(), $e->getCode());
         }
 
         return $data;
@@ -108,14 +107,14 @@ class PDOConnection
     public function all($style = \PDO::FETCH_ASSOC)
     {
         if (!$this->stmt) {
-            throw new BaseAppException('SQL query is not prepared', 'DB');
+            throw new AppException('SQL query is not prepared', 'DB');
         }
 
         try {
             $data = $this->stmt->fetchAll($style);
         } catch (\PDOException $e) {
 
-            throw new BaseAppException($e->getMessage(), $e->getCode());
+            throw new AppException($e->getMessage(), $e->getCode());
         }
 
         return $data;
@@ -129,20 +128,18 @@ class PDOConnection
     /**
      * Constructor
      */
-    private function __construct()
+    private function __construct($dsn, $user, $password)
     {
-        $cfg = (Config::getInstance())->dataProvider['db'];
-
         try {
             $options = [
-                \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                 \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
             ];
 
-            $this->dbConnection = new \PDO($cfg['dsn'], $cfg['user'], $cfg['password'], $options);
+            $this->dbConnection = new \PDO($dsn, $user, $password, $options);
         } catch(\PDOException $e) {
 
-            throw new BaseAppException($e->getMessage(), $e->getCode());
+            throw new AppException($e->getMessage(), $e->getCode());
         }
     }
 }

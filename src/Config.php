@@ -1,7 +1,7 @@
 <?php
 namespace buildok\base;
 
-use buildok\base\exceptions\BaseAppException;
+use buildok\base\exceptions\AppException;
 
 /**
 * Config class
@@ -36,7 +36,7 @@ class Config
     /**
      * Overload.
      *
-     * Returns parameter value or NULL if is not exist
+     * Returns parameter value or NULL if not exist
      * @param string $name Parameter name
      * @return mixed
      */
@@ -52,12 +52,12 @@ class Config
     /**
      * Constructor
      *
-     * @throws BaseAppException
+     * @throws AppException
      */
     private function __construct()
     {
         if (!defined('ROOT')) {
-            throw new BaseAppException('ROOT not defined');
+            throw new AppException('ROOT not defined');
         }
 
         $this->settings = require(ROOT . '/app/config/web.php');

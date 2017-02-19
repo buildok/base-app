@@ -2,8 +2,8 @@
 namespace buildok\base;
 
 use buildok\base\Config;
-use buildok\base\exceptions\BaseHttpException;
-use buildok\base\exceptions\BaseAppException;
+use buildok\base\exceptions\HttpException;
+use buildok\base\exceptions\AppException;
 
 /**
  *  Application Class
@@ -24,12 +24,12 @@ class Application
             list ($controller_ns, $action) = $this->route($_SERVER['REQUEST_URI']);
             echo (new $controller_ns)->$action();
 
-        } catch (BaseAppException $e) {
+        } catch (AppException $e) {
             $code = $e->getCode();
             $message = $e->getMessage();
 
             echo $this->error("Application Error:[$code] $message", 500);
-        } catch (BaseHttpException $e) {
+        } catch (HttpException $e) {
 
             echo $this->error($e->getMessage(), $e->getCode());
         }
@@ -41,25 +41,75 @@ class Application
     }
 
     /**
-     * [route description]
-     * @param  [type] $URI [description]
-     * @return [type]      [description]
+     * Overload
      *
-     * @throws BaseAppException
-     * @throws BaseAppException
+     * Returns object of specified component
+     * @param  string $name Component name
+     * @param  array $args
+     * @return mixed
+     *
+     * @throws AppException
+     */
+    public static function __callStatic($name, $args)
+    {
+        if (!self::config()->components || !array_key_exists($name, self::config()->components)) {
+            throw new AppException("Component $name not found", 500);
+        }
+
+        $cfg = self::config()->components[$name];
+
+        if (!array_key_exists('class', $cfg)) {
+            throw new AppException("Not specified [class] for component $name", 500);
+        }
+
+        $class_ns = $cfg['class'];
+
+        if (!class_exists($class_ns)) {
+            throw new AppException("Class $class_ns not found: $uri", 500);
+        }
+
+        if (!$args) {
+            unset($cfg['class']);
+            $args = array_values($cfg);
+        }
+
+        if (method_exists($class_ns, 'getInstance')) {
+            $component = $class_ns::getInstance(...$args);
+        } else {
+            $component = new $class_ns(...$args);
+        }
+
+        return $component;
+    }
+
+    /**
+     * Get application config
+     * @return Config Object of class Config
+     */
+    public static function config()
+    {
+        return Config::getInstance();
+    }
+
+    /**
+     * Returns route
+     * @param  string $URI Request string
+     * @return array Array of route as [controller_ns, action]
+     *
+     * @throws HttpException
      */
     private function route($URI)
     {
         $res = $this->parse(trim($URI, '/'));
         if (count($res) < 2) {
-            throw new BaseAppException('Wrong definition of rules');
+            throw new HttpException("Page not found: $URI", 404);
         }
 
         $controller_ns = 'app\\controllers\\' . ucfirst($res[0]);
         $action = $res[1];
 
         if (!class_exists($controller_ns) || !method_exists($controller_ns, $action)) {
-            throw new BaseHttpException("Page not found: $URI", 404);
+            throw new HttpException("Page not found: $URI", 404);
         }
 
         return [$controller_ns, $action];
@@ -72,8 +122,8 @@ class Application
      */
     private function parse($URI)
     {
-        $patterns = (Config::getInstance())->routes['patterns'];
-        foreach($patterns as $pattern => $route) {
+        $patterns = self::config()->routes['patterns'];
+        foreach ($patterns as $pattern => $route) {
             if (!preg_match($pattern, $URI, $matches) === false) {
 
                 $route = $this->fetchPattern('controller', $matches, $route);

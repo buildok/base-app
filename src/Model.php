@@ -1,7 +1,6 @@
 <?php
 namespace buildok\base;
 
-use buildok\base\Config;
 use buildok\helpers\ArrayWrapper;
 use buildok\validator\Validator;
 
@@ -93,17 +92,5 @@ abstract class Model extends ArrayWrapper
      * @return Model Object of Model class
      */
     abstract public static function findOne($id);
-
-    /**
-     * Returns DB connection
-     * @return PDOConnection
-     */
-    protected function getConnection()
-    {
-        $class = (Config::getInstance())->dataProvider['class'];
-        $db = $class::getInstance();
-
-        return $db;
-    }
 
 }
