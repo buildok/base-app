@@ -12,8 +12,8 @@
         }
     ],
     "require": {
-        "buildok/helpers":"dev-master",
-        "buildok/validator":"dev-master"
+        "buildok/helpers":"*",
+        "buildok/validator":"*"
     },
     "autoload": {
         "psr-4": {
