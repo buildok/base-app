@@ -139,7 +139,7 @@ class PDOConnection
             $this->dbConnection = new \PDO($dsn, $user, $password, $options);
         } catch(\PDOException $e) {
 
-            throw new AppException($e->getMessage(), $e->getCode());
+            throw new AppException('PDOConnection:'.$e->getMessage(), $e->getCode());
         }
     }
 }
