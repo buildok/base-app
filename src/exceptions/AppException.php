@@ -1,5 +1,5 @@
 <?php
-namespace app\base\exceptions;
+namespace buildok\base\exceptions;
 
 class AppException extends \Exception
 {
