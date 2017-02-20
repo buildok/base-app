@@ -10,12 +10,12 @@ class PDOConnection
 {
     /**
      * Instance of this class
-     * @var DataProvider
+     * @var PDOConnection
      */
     private static $_instance = null;
 
     /**
-     * DB connection
+     * DB connection object
      * @var \PDO
      */
     private $dbConnection;
@@ -28,7 +28,7 @@ class PDOConnection
 
     /**
      * Get object of this class
-     * @return DataProvider
+     * @return PDOConnection
      */
     public static function getInstance($dsn, $user, $password = '')
     {
@@ -42,7 +42,7 @@ class PDOConnection
     /**
      * Prepare SQL query
      * @param  string $sql SQL query
-     * @return PDOConnection This object
+     * @return PDOConnection self
      */
     public function query($sql)
     {
@@ -59,7 +59,7 @@ class PDOConnection
     /**
      * Execute prepared query
      * @param  array $params Query parameters
-     * @return PDOConnection This object
+     * @return PDOConnection self
      */
     public function exec($params = [])
     {

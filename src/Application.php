@@ -73,11 +73,7 @@ class Application
             $args = array_values($cfg);
         }
 
-        if (method_exists($class_ns, 'getInstance')) {
-            $component = $class_ns::getInstance(...$args);
-        } else {
-            $component = new $class_ns(...$args);
-        }
+        $component = $class_ns::getInstance(...$args);
 
         return $component;
     }
