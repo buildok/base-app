@@ -24,14 +24,9 @@ class Application
             list ($controller_ns, $action) = $this->route($_SERVER['REQUEST_URI']);
             echo (new $controller_ns)->$action();
 
-        } catch (AppException $e) {
-            $code = $e->getCode();
-            $message = $e->getMessage();
-
-            echo $this->error("Application Error:[$code] $message", 500);
         } catch (HttpException $e) {
-
-            echo $this->error($e->getMessage(), $e->getCode());
+            http_response_code($e->getCode());
+            echo $e->getMessage();
         }
 
         $out = ob_get_contents();
@@ -146,18 +141,5 @@ class Application
         }
 
         return $route;
-    }
-
-    /**
-     * Set error code
-     * @param int $code Error code
-     * @param string $message Error message
-     * @return JSON Error description
-     */
-    private function error($message, $code)
-    {
-        http_response_code($code);
-
-        return json_encode(['error' => $message, 'code' => $code]);
     }
 }
