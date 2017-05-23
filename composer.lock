@@ -1,0 +1,42 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "4a7ce58eac9c5c3cbc55db0e14ec5302",
+    "content-hash": "f355be57d744942dd0e680e9966d4b3a",
+    "packages": [
+        {
+            "name": "buildok/helpers",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/buildok/helpers.git",
+                "reference": "cc2bf69ed5fa0e1f04edbb9218979d3e7462472e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/buildok/helpers/zipball/cc2bf69ed5fa0e1f04edbb9218979d3e7462472e",
+                "reference": "cc2bf69ed5fa0e1f04edbb9218979d3e7462472e",
+                "shasum": ""
+            },
+            "type": "package",
+            "autoload": {
+                "psr-4": {
+                    "buildok\\helpers\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2017-01-20 09:31:38"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

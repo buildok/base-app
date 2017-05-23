@@ -34,6 +34,44 @@ class Config
     }
 
     /**
+     * [getComponent description]
+     * @param  [type] $name [description]
+     * @return [type]       [description]
+     */
+    public function getComponent($name)
+    {
+        if (!$this->components || !array_key_exists($name, $this->components)) {
+            throw new AppException("Component $name not found", 500);
+        }
+
+        $cfg = $this->components[$name];
+
+        if (!array_key_exists('class', $cfg)) {
+            throw new AppException("Not specified [class] for component $name", 500);
+        }
+
+        if (!class_exists($cfg['class'])) {
+            throw new AppException("Class $class_ns not found: $uri", 500);
+        }
+
+        return $cfg['class'];
+    }
+
+    public function getArgs($name)
+    {
+        if (!$this->components || !array_key_exists($name, $this->components)) {
+            throw new AppException("Component $name not found", 500);
+        }
+
+        $cfg = $this->components[$name];
+
+        unset($cfg['class']);
+        $args = array_values($cfg);
+
+        return $args;
+    }
+
+    /**
      * Overload.
      *
      * Returns parameter value or NULL if not exist
@@ -57,9 +95,9 @@ class Config
     private function __construct()
     {
         if (!defined('ROOT')) {
-            throw new AppException('ROOT not defined');
+            throw new AppException('ROOT is not defined');
         }
 
-        $this->settings = require(ROOT . '/app/config/web.php');
+        $this->settings = require(ROOT . '/config/web.php');
     }
 }

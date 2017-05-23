@@ -1,0 +1,17 @@
+version: "2"
+services:
+    web:
+        image: buildok/nginx
+        ports:
+            - "8080:80"
+        volumes_from:
+            - app
+        links:
+            - app:FCGI_BACKEND_CONTAINER
+    app:
+        image: buildok/php70
+        ports:
+            - "9000"
+            - "9001"
+        volumes:
+            - ./:/source
