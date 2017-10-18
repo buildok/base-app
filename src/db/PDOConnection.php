@@ -4,7 +4,8 @@ namespace buildok\base\db;
 use buildok\base\exceptions\AppException;
 
 /**
- *
+ * $db = PDOConnection::getInstance($dsn, $user, $password);
+ * $data = $db->query('SELECT * FROM table WHERE id = ?')->exec(100)->one()
  */
 class PDOConnection
 {
@@ -64,7 +65,7 @@ class PDOConnection
     public function exec($params = [])
     {
         if (!$this->stmt) {
-            throw new AppException('SQL query is not prepared', 'DB');
+            throw new AppException('SQL query is not prepared');
         }
 
         try {
@@ -85,7 +86,7 @@ class PDOConnection
     public function one($style = \PDO::FETCH_ASSOC)
     {
         if (!$this->stmt) {
-            throw new AppException('SQL query is not prepared', 'DB');
+            throw new AppException('SQL query is not prepared');
         }
 
         try {
@@ -107,7 +108,7 @@ class PDOConnection
     public function all($style = \PDO::FETCH_ASSOC)
     {
         if (!$this->stmt) {
-            throw new AppException('SQL query is not prepared', 'DB');
+            throw new AppException('SQL query is not prepared');
         }
 
         try {

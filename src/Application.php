@@ -3,7 +3,6 @@ namespace buildok\base;
 
 use buildok\base\Config;
 use buildok\base\exceptions\HttpException;
-use buildok\base\exceptions\AppException;
 
 /**
  *  Application Class
@@ -42,8 +41,6 @@ class Application
      * @param  string $name Component name
      * @param  array $args
      * @return mixed
-     *
-     * @throws AppException
      */
     public function __call($name, $args)
     {
@@ -64,8 +61,6 @@ class Application
      * @param  string $name Component name
      * @param  array $args
      * @return mixed
-     *
-     * @throws AppException
      */
     public static function __callStatic($name, $args)
     {

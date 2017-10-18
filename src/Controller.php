@@ -42,7 +42,8 @@ class Controller
      */
     private function fetchRequestData()
     {
-        if (!in_array($_SERVER['REQUEST_METHOD'], self::METHOD)) {
+        $income['method'] = $_SERVER['REQUEST_METHOD'];
+        if (!in_array($income['method'], $this->getMethods())) {
             throw new HttpException('Unsupported request method:' . $income['method'], 400);
         }
 
@@ -88,5 +89,10 @@ class Controller
         }
 
         return $headers;
+    }
+
+    private function getMethods()
+    {
+        return self::METHOD;
     }
 }
